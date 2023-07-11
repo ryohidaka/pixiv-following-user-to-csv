@@ -1,4 +1,5 @@
 from utils.config import get_restrict
+from utils.csv import output
 from utils.logger import init_logger
 from utils.pixiv import get_following_users, init_api
 
@@ -17,6 +18,12 @@ class AppClass:
 
         # Get the list of users.
         users = get_following_users(self)
+
+        # Define the CSV file name.
+        csv_file = f"output/{self.restrict}.csv"
+
+        # Output the list of users to the CSV file.
+        output(self, csv_file, users)
 
 
 if __name__ == "__main__":
