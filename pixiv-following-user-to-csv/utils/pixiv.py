@@ -24,7 +24,7 @@ def init_api(self) -> AppPixivAPI:
     return api
 
 
-def get_following_users(self):
+def get_following_users(self, last_id):
     """
     Get the list of users who the target user is following.
     """
@@ -39,6 +39,8 @@ def get_following_users(self):
     res = self.api.user_following(USER_ID, restrict=self.restrict)
     time.sleep(5)
 
+    duplicated = False
+
     while True:
         try:
             user_previews = res.user_previews
@@ -50,6 +52,12 @@ def get_following_users(self):
 
                 user_id = user.id
 
+                # If the user ID is already registered in the CSV file, stop the processing.
+                if user_id == last_id:
+                    self.logger.info("The user ID is already registered in the CSV file.")
+                    duplicated = True
+                    break
+
                 user_data = {
                     "id": user_id,
                     "account": user.account,
@@ -58,6 +66,9 @@ def get_following_users(self):
                 }
 
                 users.append(user_data)
+
+            if duplicated:
+                break
 
             next_url = res.next_url
             logger.info(f"Next URL: {next_url}")
