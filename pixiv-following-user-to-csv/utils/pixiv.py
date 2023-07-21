@@ -53,8 +53,10 @@ def get_following_users(self, last_id):
                 user_id = user.id
 
                 # If the user ID is already registered in the CSV file, stop the processing.
-                if user_id == last_id:
-                    self.logger.info("The user ID is already registered in the CSV file.")
+                if user_id == last_id and self.mode == "diff":
+                    self.logger.info(
+                        "The user ID is already registered in the CSV file."
+                    )
                     duplicated = True
                     break
 
